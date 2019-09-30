@@ -3,7 +3,7 @@ const serveStatic = require('serve-static')
 const path = require('path')
 
 const app = express()
-const port = 8080
+const port = process.env.PORT || 8080
 
 app.use('/', serveStatic(path.join(__dirname, '/dist')));
 // app.get('/', (req, res) => res.send('Hello World!'))
