@@ -42,7 +42,7 @@ export default {
   },
   methods:{
     register(){
-      axios.post('http://localhost:8000/api/register',{
+      axios.post(process.env.VUE_APP_ROOT_API+'/api/register',{
             name:this.name,
             email:this.email,
             password:this.password,

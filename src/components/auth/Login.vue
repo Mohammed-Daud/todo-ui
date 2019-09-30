@@ -38,7 +38,7 @@
     },
     methods: {
       setAuthUser(){
-        axios.get('http://localhost:8000/api/user',{
+        axios.get(process.env.VUE_APP_ROOT_API+'/api/user',{
           headers:{
             Authorization: 'Bearer ' + localStorage.getItem('token')
           } 
@@ -51,7 +51,7 @@
       },
       login() {
         this.error = false;
-        axios.post('http://localhost:8000/api/login',{
+        axios.post(process.env.VUE_APP_ROOT_API+'/api/login',{
             email:this.email,
             password:this.password,
         }).then(response => {

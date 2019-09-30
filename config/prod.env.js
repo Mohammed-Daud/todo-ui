@@ -1,6 +1,6 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  ROOT_API: '"http://localhost:8000"'
+  VUE_APP_ROOT_API: '"https://desolate-anchorage-88054.herokuapp.com"'
 
 }

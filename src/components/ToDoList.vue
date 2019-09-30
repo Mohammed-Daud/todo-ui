@@ -4,37 +4,39 @@
         <hr>
         <input type="text" name="" class="form-control" id="" v-model="newToDo" @keyup.enter="addNewToDo">
         
-        
+        <hr>
 
         <ul class="todo-list">
             <li v-for="(toDo) in pendingTasks" v-bind:key="toDo.id">
                 <span v-if="toDo.action == 'none'">
-                    {{ toDo.description }} id: {{ toDo.id }}
+                    {{ toDo.description }}
                 </span>
-                | 
+                
                 <input v-if="toDo.action == 'edit'" type="text" @keyup.enter="updateToDo(toDo)" class="form-control" id="" v-model="toDo.description">
-                <strong>
-                    <a @click="markCompleted(toDo)" href="Javascript:;">Completed</a>
-                </strong>
-                |
-                <strong>
-                    <a v-if="toDo.action == 'none'" @click="editToDo(toDo)" href="Javascript:;">Edit</a>
-                    <a v-else @click="cancelToDo(toDo)" href="Javascript:;">Cancel</a>
-                </strong>
-                |
-                <strong>
-                    <a @click="removeToDo(toDo)" href="Javascript:;">Remove</a>
-                </strong>
+                <div>
+                    <strong>
+                        <a @click="markCompleted(toDo)" href="Javascript:;">Completed</a>
+                    </strong>
+                    |
+                    <strong>
+                        <a v-if="toDo.action == 'none'" @click="editToDo(toDo)" href="Javascript:;">Edit</a>
+                        <a v-else @click="cancelToDo(toDo)" href="Javascript:;">Cancel</a>
+                    </strong>
+                    |
+                    <strong>
+                        <a @click="removeToDo(toDo)" href="Javascript:;">Remove</a>
+                    </strong>
+                </div>
             </li>
         </ul>
         <h4>Competed Task</h4>
         <hr>
         <ul class="todo-list">
             <li v-for="completedTask in completedTasks" v-bind:key="completedTask.id">
-                {{ completedTask.description }}  id: {{ completedTask.id }} | 
-                <strong>
-                    <a @click="markNotCompleted(completedTask)" href="Javascript:;">Not Completed</a>
-                </strong>
+                {{ completedTask.description }}
+                <div>
+                    <a @click="markNotCompleted(completedTask)" href="Javascript:;">Mark Not Completed</a>
+                </div>
             </li>
         </ul>
     </div>
@@ -59,26 +61,7 @@ export default {
             idForInput:4,
             oldDescription:'',
             token:this.$auth.getToken(),
-            allToDos:[
-                {
-                    id:1,
-                    description:'lorem1',
-                    status:'pending',
-                    action:'none',
-                },
-                {
-                    id:2,
-                    description:'lorem1',
-                    status:'pending',
-                    action:'none',
-                },
-                {
-                    id:3,
-                    description:'lorem1',
-                    status:'pending',
-                    action:'none', //none or edit
-                }
-            ],
+            allToDos:[],
         }
     },
     computed:{
@@ -95,11 +78,11 @@ export default {
     },
     methods:{
         getToDos(){
-            Axios.get('http://localhost:8000/api/todos?user_id='+this.$auth.getAuthUser().id).then(response => {
-                console.log(response);
+            Axios.get(process.env.VUE_APP_ROOT_API+'/api/todos?user_id='+this.$auth.getAuthUser().id).then(response => {
+                console.log(response.data);
                 this.allToDos = response.data
             }).catch(err => {
-                console.log('http://localhost:8000/api/todos?user_id='+this.$auth.getAuthUser().id);
+                console.log(process.env.VUE_APP_ROOT_API+'/api/todos?user_id='+this.$auth.getAuthUser().id);
                 console.log(err);
             });
         },
@@ -108,7 +91,7 @@ export default {
                 this.newToDo = '';
                 return;
             }
-            Axios.post('http://localhost:8000/api/todos',{
+            Axios.post(process.env.VUE_APP_ROOT_API+'/api/todos',{
 
                 description:this.newToDo,
                 user_id:this.$auth.getAuthUser().id
@@ -117,14 +100,15 @@ export default {
             }).then(response => {
                 
                 console.log(response);
-                this.allToDos.push({
-                    id:this.idForInput,
-                    description:this.newToDo,
-                    status:'pending',
-                    action:'none',
-                });
+                // this.allToDos.push({
+                //     id:this.idForInput,
+                //     description:this.newToDo,
+                //     status:'pending',
+                //     action:'none',
+                // });
                 this.newToDo = '';
-                this.idForInput++;
+                // this.idForInput++;
+                this.getToDos();
 
             }).catch(err => {
 
@@ -133,7 +117,7 @@ export default {
             });
         },
         markCompleted(toDo){
-            Axios.put('http://localhost:8000/api/todos/'+toDo.id,{
+            Axios.put(process.env.VUE_APP_ROOT_API+'/api/todos/'+toDo.id,{
                 status:'done'
             }).then(response=>{
                 console.log(response);
@@ -143,7 +127,7 @@ export default {
             });
         },
         markNotCompleted(toDo){
-            Axios.put('http://localhost:8000/api/todos/'+toDo.id,{
+            Axios.put(process.env.VUE_APP_ROOT_API+'/api/todos/'+toDo.id,{
                 status:'pending'
             }).then(response=>{
                 console.log(response);
@@ -159,7 +143,7 @@ export default {
                 console.log('sdfsdfsdf' + toDo.id);
                 if(element.id == toDo.id){
                     console.log('MATCH');
-                    Axios.delete('http://localhost:8000/api/todos/' + toDo.id).then(response=>{
+                    Axios.delete(process.env.VUE_APP_ROOT_API+'/api/todos/' + toDo.id).then(response=>{
                         console.log(response);
                         object.splice(index, 1);
                     }).catch(err=>{
@@ -182,7 +166,7 @@ export default {
                 toDo.description = this.oldDescription;
                 return;
             }
-            Axios.put('http://localhost:8000/api/todos/'+toDo.id,{
+            Axios.put(process.env.VUE_APP_ROOT_API+'/api/todos/'+toDo.id,{
                 description:toDo.description
             }).then(response=>{
                 console.log(response);
@@ -192,7 +176,7 @@ export default {
             });
         }
     },
-    mounted: function () {
+    created: function () {
         this.getToDos();
         
     },

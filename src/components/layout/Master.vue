@@ -36,12 +36,14 @@ import Axios from 'axios';
   Axios.defaults.headers.get['Authorization'] = 'Bearer ' + localStorage.getItem('token') 
   export default {
     created(){
+
+      console.log(process.env.VUE_APP_ROOT_API)
        
       //this.setAuthUser();
     },
     methods:{
       // setAuthUser(){
-      //   Axios.get('http://localhost:8000/api/user').then(response => {
+      //   Axios.get(process.env.VUE_APP_ROOT_API+'/api/user').then(response => {
       //     this.$auth.setAuthUser(response.data);
       //     console.log(this.$auth.getAuthUser());
       //   }).catch(err => {
